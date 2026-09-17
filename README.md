@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Figuritas Coleccionables 🃏
+
+Aplicación web de "pack opening" al estilo álbum de figuritas: los usuarios se registran, abren sobres virtuales y arman su colección de cartas con distintos niveles de rareza (común, rara, épica y legendaria). Construida con **Next.js (App Router)** y **Supabase** como backend de autenticación y base de datos.
+
+## Cómo funciona
+
+1. El usuario se registra o inicia sesión con email y contraseña (Supabase Auth).
+2. Desde `/pack` puede abrir un sobre, que dispara una API route en el servidor.
+3. La API elige 5 cartas al azar respetando la probabilidad definida para cada una, las guarda asociadas al usuario y las devuelve para mostrarlas en pantalla.
+4. En `/profile` el usuario ve toda su colección acumulada, con la cantidad total de cartas obtenidas.
+
+## Estructura del proyecto
+
+```
+my-app/
+├── app/
+│   ├── page.tsx              # Redirige a /login
+│   ├── layout.tsx            # Layout raíz de la app
+│   ├── globals.css           # Estilos globales
+│   ├── login/
+│   │   └── page.tsx          # Inicio de sesión y registro
+│   ├── reset-password/
+│   │   └── page.tsx          # Recuperación de contraseña
+│   ├── auth/callback/
+│   │   └── route.ts          # Callback de confirmación de cuenta (Supabase)
+│   ├── pack/
+│   │   └── page.tsx          # Pantalla para abrir sobres
+│   ├── profile/
+│   │   └── page.tsx          # Colección de cartas del usuario
+│   └── api/
+│       └── open-pack/
+│           └── route.ts      # Endpoint que sortea y asigna las cartas
+├── lib/
+│   └── supabase.ts           # Cliente de Supabase (browser)
+├── public/                   # Assets estáticos (SVGs)
+├── next.config.ts
+├── tsconfig.json
+└── package.json
+```
+
+## Tecnologías
+
+- [Next.js 16](https://nextjs.org/) (App Router, React 19)
+- [Supabase](https://supabase.com/) — autenticación y base de datos (`cards`, `user_cards`)
+- TypeScript
+- Tailwind CSS (config incluida vía PostCSS)
 
 ## Getting Started
 
-First, run the development server:
+1. Instalar dependencias:
+
+```bash
+npm install
+```
+
+2. Configurar las variables de entorno en `.env.local`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=tu-url-de-supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key
+```
+
+3. Levantar el servidor de desarrollo:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000) para ver la app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Base de datos (Supabase)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+El proyecto espera dos tablas principales:
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **cards**: catálogo de cartas (`name`, `rarity`, `description`, `probability`).
+- **user_cards**: relación entre usuarios y las cartas que obtuvieron (`user_id`, `card_id`, `obtained_at`).
