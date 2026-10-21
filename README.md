@@ -74,3 +74,6 @@ El proyecto espera dos tablas principales:
 
 - **cards**: catálogo de cartas (`name`, `rarity`, `description`, `probability`).
 - **user_cards**: relación entre usuarios y las cartas que obtuvieron (`user_id`, `card_id`, `obtained_at`).
+
+📱 Deployado en Vercel App
+https://figuritascoleccionables.vercel.app/
